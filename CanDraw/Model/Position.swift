@@ -11,13 +11,13 @@ import UIKit
 class Position {
     private var lastPosition: CGPoint!
     private var newPosition = CGPoint(x: 0.0, y: 0.0)
-    private var sensibility : CGFloat =  0.5
+    private var sensibility: CGFloat =  0.5
     var firstPosition = true
     init(sensibility: CGFloat) {
         self.sensibility =  sensibility
     }
     
-    func newPosition(facePosition: CGPoint, cursorPosition: CGPoint) -> (CGPoint,Bool) {
+    func newPosition(facePosition: CGPoint, cursorPosition: CGPoint) -> (CGPoint, Bool) {
         var drawing = false
         if firstPosition == true {
             lastPosition = cursorPosition
@@ -29,7 +29,7 @@ class Position {
             newPosition.x = cursorPosition.x + self.sensibility
             drawing = true
         }
-        if facePosition.x < -0.05{
+        if facePosition.x < -0.05 {
             newPosition.x = cursorPosition.x - self.sensibility
             drawing = true
         }
@@ -42,14 +42,14 @@ class Position {
             drawing = true
         }
         
-        if drawing == true{
+        if drawing == true {
              newPosition = verifyLimits(position: newPosition, lastPosition: lastPosition)
         }
 
         return (position: newPosition, draw: drawing)
     }
     
-    func verifyLimits(position: CGPoint, lastPosition: CGPoint) -> CGPoint{
+    func verifyLimits(position: CGPoint, lastPosition: CGPoint) -> CGPoint {
         var positionNew = position
         let height = UIScreen.main.bounds.height
         let width = UIScreen.main.bounds.width

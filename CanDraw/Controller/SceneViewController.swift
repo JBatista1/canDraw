@@ -23,13 +23,14 @@ class SceneViewController: UIViewController {
     var finishTimer = false
     var staticPosition = CGPoint(x: 0, y: 0)
     var verifyStop = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetup()
         draw = Draw(imageViewForDraw: customView.imageForDraw, brushWidth: 3.0, colorBrush: .black, opacity: 1.0)
     }
     
-    func initialSetup(){
+    func initialSetup() {
         guard ARFaceTrackingConfiguration.isSupported else {
             fatalError("Face tracking is not supported on this device")
         }
@@ -50,7 +51,7 @@ class SceneViewController: UIViewController {
         view = customView
     }
 }
-extension SceneViewController: ARSCNViewDelegate{
+extension SceneViewController: ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.3, options: .transitionCrossDissolve, animations: {
@@ -59,17 +60,13 @@ extension SceneViewController: ARSCNViewDelegate{
                 let lastPosition = self.position
                 
                 (self.position, self.drawing) = self.cursor.newPosition(facePosition: facePosition, cursorPosition: self.customView.cursor.center)
-                
                 if self.drawing == false && self.verifyStop == true {
                     self.initTimer()
                     self.staticPosition = self.position
                     self.verifyStop = false
-                    
                 }
-                
                 if self.action == true {
                     self.InitialDraw(lastPoint: lastPosition, newPoint: self.position)
-                    
                 }
                 
                 self.customView.cursor.center = self.position
@@ -77,7 +74,7 @@ extension SceneViewController: ARSCNViewDelegate{
         }
     }
     
-    func InitialDraw(lastPoint:CGPoint, newPoint: CGPoint) {
+    func InitialDraw(lastPoint: CGPoint, newPoint: CGPoint) {
         let drawPointLast = CGPoint(x: lastPoint.x - 12.0, y: lastPoint.y+10)
         let drawPointnew = CGPoint(x: newPoint.x - 12.0, y: newPoint.y+10)
         self.draw.line(from: drawPointLast, to: drawPointnew)
@@ -90,30 +87,27 @@ extension SceneViewController: ARSCNViewDelegate{
         UIGraphicsEndImageContext()
         
     }
-    func initTimer(){
+    func initTimer() {
         if finishTimer == false {
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.onTimerDrawn), userInfo: nil, repeats: true)
             finishTimer = true
         }
         
     }
-    @objc func onTimerDrawn(){
+    
+    @objc func onTimerDrawn() {
         timeLeft -= 1
         print("Fui ativado")
-        if timeLeft <= 0{
+        if timeLeft <= 0 {
             timer?.invalidate()
             timer = nil
             timeLeft = 2
             verifyStop = true
             finishTimer = false
             if staticPosition == position {
-                
                 action = !action
-               
                 customView.cursor.image = UIImage(named: "lapis")
-                
             }
-            
         }
         if action == false {
             customView.cursor.image = UIImage(named: "lapis2")
